@@ -23,7 +23,7 @@ int main(){
 		i++; 
 	}while(strcmp(f[i-1],"END")!=0);
     
-    // Initialisation of LOCCCTR
+    // Initialisation of LOCCTR
 
     i=0;
     if(strcmp(f[i],"START")==0){
@@ -41,7 +41,7 @@ int main(){
             continue;
         }
         else{
-            
+             
         }
     }
 
