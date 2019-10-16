@@ -3,3 +3,11 @@
 A0 2 2 COMPR
 00 3 3 LDA
 0C 3 3 STA
+A 0
+I 1
+L 2    
+B 3
+S 4
+T 5
+PC 8
+SW 9
