@@ -40,7 +40,7 @@ char* ToHex(int locctr){
 
 int main(){
     char f[100][100];
-    int locctr;
+    int locctr,first_address,last_address;
     FILE *fpw;
     // Reading of input file
 
@@ -57,6 +57,7 @@ int main(){
     else{
         locctr=0;
     }
+    first_address=locctr;
 
     //Symtab created
 
@@ -103,5 +104,7 @@ int main(){
         }
         i++;
     }
+    last_address=locctr;
+    
     return 0;
 }
