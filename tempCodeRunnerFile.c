@@ -1,2 +1,0 @@
-
-    // optab.code = code;
