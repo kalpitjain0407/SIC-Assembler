@@ -1,8 +1,8 @@
 
 struct OPTAB Read_OpCodes() {
 
-    char regs[9][2][10];
-    char codes[10][4][10];
+    char regs[REGISTERS][2][10];
+    char codes[OPCODE_SIZE][4][10];
     int i=0, j=0;
     FILE *fp;
     fp = fopen("instruction", "r");
