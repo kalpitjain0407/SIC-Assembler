@@ -58,7 +58,7 @@ int main(){
         locctr=0;
     }
 
-    //Symtab
+    //Symtab created
 
     fpw=fopen("symtab.txt","w");
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
