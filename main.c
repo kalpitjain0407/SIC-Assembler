@@ -1,6 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include "data_structure.c"
+#include "optab_helper.c"
+
+struct symtab{
+    char s[100][20];
+    int l; 
+};
 
 int main(){
     char f[100][100];
@@ -12,6 +19,7 @@ int main(){
 	fp=fopen("input.txt","r");
     do{
 		fscanf(fp,"%s",f[i]);
+        // printf("%s\n",f[i]);
 		i++; 
 	}while(strcmp(f[i-1],"END")!=0);
     
@@ -24,9 +32,18 @@ int main(){
     else{
         locctr=0;
     }
-    printf("%d\n",locctr);
-    
+    // printf("%d\n",locctr);
 
+    struct OPTAB optab = Read_OpCodes();
+    while(strcmp(f[i],"END")!=0){
+        if(strcmp(f[i],"START")==0){
+            i+=2;
+            continue;
+        }
+        else{
+            
+        }
+    }
 
     return 0;
 }
