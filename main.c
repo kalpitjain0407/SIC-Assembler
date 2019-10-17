@@ -44,10 +44,12 @@ void print(struct SYMTAB* symtab, int length) {
 
 int main(){
     int locctr,first_address,last_address, prog_length, symtab_index, symtab_length;
-    FILE *fpw;
+    FILE *fpw, *fpi;
     
     // Reading of input file
 	struct IPCODE ipcode = Read_IP_Code();
+    // for(int i=0;i<15;i++)
+    // printf("%s\n",ipcode.lines[i][1]);
 
     // Initialisation of LOCCCTR
     int i=0;
@@ -64,6 +66,10 @@ int main(){
     symtab_index = 0;
     fpw=fopen("symtab","w");
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
+    fpi=fopen("intermediate.txt","w");
+    fprintf(fpi,"%s %s %s\n",ipcode.lines[0][0],ipcode.lines[0][1],ipcode.lines[0][2]);
+
+    // Enter into Symtab Data Structure
     memcpy(symtab[symtab_index].label, ipcode.lines[0][0], sizeof(ipcode.lines[0][0]));
     symtab[symtab_index].addr = locctr;
     symtab_index++;
@@ -75,6 +81,7 @@ int main(){
     while(strcmp(ipcode.lines[i][1], "END")!=0){
         bool writeToSymTabFile = true;
         char *st=ToHex(locctr);
+        fprintf(fpi,"%s %s %s %s\n",st,ipcode.lines[i][0],ipcode.lines[i][1],ipcode.lines[i][2]); //writing in input file
 
         // If there is a symbol in Label Field
         if(strlen(ipcode.lines[i][0])>0){
