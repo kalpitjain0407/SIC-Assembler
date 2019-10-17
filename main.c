@@ -43,8 +43,9 @@ void print(struct SYMTAB* symtab, int length) {
 
 
 int main(){
-    int locctr,first_address,last_address, prog_length, symtab_index, symtab_length, total_lines;
-    FILE *fpw, *fpi;
+    int locctr,first_address,last_address, prog_length, symtab_index, symtab_length, total_lines, listing_line=0;
+    char *header1,*header2,*header3,*prefix;
+    FILE *fpw,*fpi,*fpr,*fpo;
     total_lines = 0;
     symtab_index = 0;
 
@@ -150,11 +151,75 @@ int main(){
         print(symtab, symtab_index);
         i++;
     }
+    // printf("%s\n",ipcode.lines[i][1]);
+    fprintf(fpi,"%d\n",total_lines);
     symtab_length = symtab_index;
     last_address = locctr;
     prog_length = last_address - first_address;
 
     struct INTMD intmdFile[MAX_IP_Lines];
+    // printf("%s\n",ipcode.lines[i][1]);
     Read_INTMD_File(intmdFile, ipcode, total_lines);
+    for(i=0;i<7;i++)
+    printf("%s %s %s %s\n",intmdFile[i].addr,intmdFile[i].label,intmdFile[i].mnemonic,intmdFile[i].operand);
+    //Pass 2 algorithm
+
+    if(strcmp(intmdFile[0].mnemonic,"START")==0){     //writing the header part of object file
+        listing_line=1;
+        char* h="H";
+        
+        header1=(char*)malloc(strlen(intmdFile[0].label)+1);
+        strcpy(header1,h);
+        strcat(header1,intmdFile[0].label);
+        int y=strlen(header1);
+        header1[y-1]='\0';
+        // printf("%s\n",header1);
+
+        char* first_addr=ToHex(first_address);
+        prefix="00";
+        header2=(char*)malloc(strlen(first_addr)+strlen(prefix));
+        strcpy(header2,prefix);
+        strcat(header2,first_addr);
+        // printf("%s\n",header2);
+
+        char* second_addr=ToHex(prog_length);
+        header3=(char*)malloc(strlen(first_addr)+strlen(prefix));
+        strcpy(header3,prefix);
+        strcat(header3,second_addr);
+        // printf("%s\n",header3);
+
+        fpo=fopen("object.txt","w");
+        fprintf(fpo,"%s %s%s\n",header1,header2,header3);
+    }
+    
+    //Text record
+    // i=1;
+    
+    char **text_record=(char**)malloc(100*sizeof(char*));
+    for(i=0;i<100;i++){
+        text_record[i]=(char*)malloc(62);
+    }
+    char* start_addr=header2;
+    i=1;
+    // for(int j=0;j<100;j++){
+    //     printf("%s %s %s %s\n",optab.code[j][0],optab.code[j][1],optab.code[j][2],optab.code[j][3]);
+    // }
+    int k=0,y;
+    while(i<=6){
+        text_record[i-1][0]='T';
+        strcat(text_record[k],start_addr);
+        text_record[k][7]='0';
+        text_record[k][8]='0';
+        int j;
+        for(j=0;j<100;j++){
+            if(strcmp(intmdFile[i].mnemonic,optab.code[j][3])==0){
+                strcat(text_record[k],optab.code[j][0]);
+                
+            }
+        }
+        break;
+    }
+
+
     return 0;
 }

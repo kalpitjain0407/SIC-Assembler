@@ -91,7 +91,7 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
     do {
         char addr[5];
         char label[100];
-        char opcode[100];
+        char mnemonic[100];
         char operand[100];
         fscanf(fp, "%s", addr);
         memcpy(intmdFile[j].addr, addr, sizeof(addr));
@@ -104,8 +104,8 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
         }
         
 
-        fscanf(fp, "%s", opcode);
-        memcpy(intmdFile[j].opcode, opcode, sizeof(opcode));
+        fscanf(fp, "%s", mnemonic);
+        memcpy(intmdFile[j].mnemonic, mnemonic, sizeof(mnemonic));
 
         fscanf(fp, "%s", operand);        
         memcpy(intmdFile[j].operand, operand, sizeof(operand));

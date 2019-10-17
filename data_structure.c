@@ -31,6 +31,6 @@ struct SYMTAB {
 struct INTMD {
     char addr[5];
     char label[100];
-    char opcode[100];
+    char mnemonic[100];
     char operand[100];
 };
