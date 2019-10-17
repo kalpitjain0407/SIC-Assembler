@@ -43,9 +43,11 @@ void print(struct SYMTAB* symtab, int length) {
 
 
 int main(){
-    int locctr,first_address,last_address, prog_length, symtab_index, symtab_length;
+    int locctr,first_address,last_address, prog_length, symtab_index, symtab_length, total_lines;
     FILE *fpw, *fpi;
-    
+    total_lines = 0;
+    symtab_index = 0;
+
     // Reading of input file
 	struct IPCODE ipcode = Read_IP_Code();
     // for(int i=0;i<15;i++)
@@ -60,14 +62,14 @@ int main(){
         locctr=0;
     }
     first_address=locctr;
-
+    
     // Symtab created
     struct SYMTAB symtab[100];
-    symtab_index = 0;
     fpw=fopen("symtab","w");
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
     fpi=fopen("intermediate.txt","w");
-    fprintf(fpi,"%s %s %s\n",ipcode.lines[0][0],ipcode.lines[0][1],ipcode.lines[0][2]);
+    char* st_hex = ToHex(locctr);
+    fprintf(fpi,"%s %s %s %s\n",st_hex, ipcode.lines[0][0],ipcode.lines[0][1],ipcode.lines[0][2]);
 
     // Enter into Symtab Data Structure
     memcpy(symtab[symtab_index].label, ipcode.lines[0][0], sizeof(ipcode.lines[0][0]));
@@ -79,6 +81,7 @@ int main(){
     i=1;
 
     while(strcmp(ipcode.lines[i][1], "END")!=0){
+        total_lines++;
         bool writeToSymTabFile = true;
         char *st=ToHex(locctr);
         fprintf(fpi,"%s %s %s %s\n",st,ipcode.lines[i][0],ipcode.lines[i][1],ipcode.lines[i][2]); //writing in input file
@@ -150,6 +153,8 @@ int main(){
     symtab_length = symtab_index;
     last_address = locctr;
     prog_length = last_address - first_address;
-        
+
+    struct INTMD intmdFile[MAX_IP_Lines];
+    Read_INTMD_File(intmdFile, ipcode, total_lines);
     return 0;
 }
