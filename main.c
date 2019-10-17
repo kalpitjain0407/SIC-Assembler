@@ -1,11 +1,5 @@
 #include "data_structure.c"
-#include "optab_helper.c"
-#include "Input_helper.c"
-
-struct symtab{
-    char s[100][20];
-    int l; 
-};
+#include "reader.c"
 
 char* ToHex(int locctr){
     char* ans=(char*)malloc(5);
@@ -38,18 +32,24 @@ char* ToHex(int locctr){
     return (char *)ans;
 }
 
-int main(){
-    char f[100][100];
-    int locctr,first_address,last_address;
-    FILE *fpw;
-    // Reading of input file
+void print(struct SYMTAB* symtab, int length) {
+    printf("SYMTAB\n");
+    for(int i=0;i<length;i++) {
+        char *st=ToHex(symtab[i].addr);
+        printf("%s %s\n", symtab[i].label, st);
+    }
+    printf("=======================================\n");
+}
 
+
+int main(){
+    int locctr,first_address,last_address, prog_length, symtab_index, symtab_length;
+    FILE *fpw;
+    
+    // Reading of input file
 	struct IPCODE ipcode = Read_IP_Code();
-    // for(int i=0;i<11;i++)
-    // printf("%s\n",ipcode.lines[i][0]);
 
     // Initialisation of LOCCCTR
-
     int i=0;
     if(strcmp(ipcode.lines[0][1],"START")==0){
         locctr=atoi(ipcode.lines[0][2]);
@@ -59,18 +59,54 @@ int main(){
     }
     first_address=locctr;
 
-    //Symtab created
-
-    fpw=fopen("symtab.txt","w");
+    // Symtab created
+    struct SYMTAB symtab[100];
+    symtab_index = 0;
+    fpw=fopen("symtab","w");
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
-
+    memcpy(symtab[symtab_index].label, ipcode.lines[0][0], sizeof(ipcode.lines[0][0]));
+    symtab[symtab_index].addr = locctr;
+    symtab_index++;
+    print(symtab, symtab_index);
+    
     struct OPTAB optab = Read_OpCodes();
     i=1;
-    
-    while(i!=10){
+
+    while(strcmp(ipcode.lines[i][1], "END")!=0){
+        bool writeToSymTabFile = true;
         char *st=ToHex(locctr);
-        if(strcmp(ipcode.lines[i][1],"BYTE")==0){                   // opcode=byte
-            fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
+
+        // If there is a symbol in Label Field
+        if(strlen(ipcode.lines[i][0])>0){
+            bool label_found = false;
+            for(int k=0;k<symtab_index;k++) {
+                if(strcmp(symtab[k].label, ipcode.lines[i][0])==0) {  // found
+                    label_found = true;  
+                } 
+            }
+            if(label_found) {
+                printf("Duplicate Symbol: %s", ipcode.lines[i][0]);
+                return 0;
+            } else {
+                fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
+                memcpy(symtab[symtab_index].label, ipcode.lines[i][0], sizeof(ipcode.lines[i][0]));
+                symtab[symtab_index].addr = locctr;
+                symtab_index++;
+                writeToSymTabFile = false;
+            }
+        }
+        
+        // Search OPTAB for Opcode
+        bool opcode_found = false;
+        for(int k=0;k<OPCODE_SIZE;k++) {
+            if(strcmp(optab.code[k][3], ipcode.lines[i][1])==0) { 
+                opcode_found = true;
+            }
+        }
+
+        if(opcode_found) locctr += 3;                                    // Opcode found
+        else if(strcmp(ipcode.lines[i][1],"BYTE")==0){                   // opcode=byte
+            if(writeToSymTabFile) fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
             int len=strlen(ipcode.lines[i][2])-3;
             if(ipcode.lines[i][2][0]=='C'){
                 locctr+=len;
@@ -78,33 +114,35 @@ int main(){
             else{
                 locctr+=(len/2);
             }
+            writeToSymTabFile = false;
         }
         else if(strcmp(ipcode.lines[i][1],"WORD")==0){             // opcode=word
-            fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
+            if(writeToSymTabFile) fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
             locctr+=3;
+            writeToSymTabFile = false;
         }
         else if(strcmp(ipcode.lines[i][1],"RESW")==0){             // opcode=resw
-            fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
+            if(writeToSymTabFile) fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
             int x=atoi(ipcode.lines[i][2]);
             locctr+=3*x;
+            writeToSymTabFile = false;
         }
         else if(strcmp(ipcode.lines[i][1],"RESB")==0){             // opcode=resb
-            fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
+            if(writeToSymTabFile) fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
             int x=atoi(ipcode.lines[i][2]);
             locctr+=x;
+            writeToSymTabFile = false;
         }
-        else{                                                      // opcode=something else
-            if(strcmp(ipcode.lines[i][0],"")==0){
-                locctr+=3;
-            }
-            else{
-                locctr+=3;
-                fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
-            }
+        else{                                                      // set Error Flag
+            printf("Invalid Operation Code\n");
+            return 0;
         }
+        print(symtab, symtab_index);
         i++;
     }
-    last_address=locctr;
-    
+    symtab_length = symtab_index;
+    last_address = locctr;
+    prog_length = last_address - first_address;
+        
     return 0;
 }

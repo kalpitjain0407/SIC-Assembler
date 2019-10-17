@@ -1,4 +1,46 @@
 
+struct OPTAB Read_OpCodes() {
+
+    char regs[REGISTERS][2][10];
+    char codes[OPCODE_SIZE][4][10];
+    int i=0, j=0;
+    FILE *fp;
+    struct OPTAB optab;
+    fp = fopen("instruction", "r");
+    if(fp==NULL) {
+        printf("File not Found.");
+        return optab;
+    }
+
+    // Fill in the register codes
+    i=0;j=0;
+    do {
+        if(j==2){
+            i++;
+            j=0;
+        }
+        fscanf(fp, "%s", regs[i][j]);
+        j++;
+    }while(strcmp(regs[i][0], "OPCODE")!=0);
+
+    // Fill in the OpCodes
+    i=0;j=0;
+    do {
+        if(j==4){
+            i++;
+            j=0;
+        }
+        fscanf(fp, "%s", codes[i][j]);
+        j++;
+    }while(strcmp(codes[i-1][0], "END")!=0);
+    
+    memcpy(optab.reg, regs, sizeof(regs)); 
+    memcpy(optab.code, codes, sizeof(codes));
+    
+    return optab;
+}
+
+
 struct IPCODE Read_IP_Code() {
 
     char line[MAX_IP_Lines][IP_COLUMNS][100];
@@ -30,6 +72,8 @@ struct IPCODE Read_IP_Code() {
             memset(line[k][0], 0, sizeof(line[k][0]));
         }
     }
+
     memcpy(ipcode.lines, line, sizeof(line)); 
+
     return ipcode;
 }

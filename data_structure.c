@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #define TRUE 1
@@ -10,7 +11,7 @@
 #define REGISTERS 9
 
 /* Constraints of Input Code */
-#define MAX_IP_Lines 10
+#define MAX_IP_Lines 500
 #define IP_COLUMNS 3
 struct OPTAB {
     // Number of Lines, No of Columns, Size of each array
@@ -20,4 +21,9 @@ struct OPTAB {
 
 struct IPCODE {
     char lines[MAX_IP_Lines][IP_COLUMNS][100];
+};
+
+struct SYMTAB {
+    char label[100];
+    int addr;
 };
