@@ -150,6 +150,10 @@ int main(){
     symtab_length = symtab_index;
     last_address = locctr;
     prog_length = last_address - first_address;
+
+    //Pass 2 assembler
+
+    
         
     return 0;
 }
