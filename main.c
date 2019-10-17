@@ -41,12 +41,12 @@ char* ToHex(int locctr){
 int main(){
     char f[100][100];
     int locctr,first_address,last_address;
-    FILE *fpw;
+    FILE *fpw,*fpi;
     // Reading of input file
 
 	struct IPCODE ipcode = Read_IP_Code();
-    // for(int i=0;i<11;i++)
-    // printf("%s\n",ipcode.lines[i][0]);
+    for(int i=0;i<15;i++)
+    printf("%s\n",ipcode.lines[i][1]);
 
     // Initialisation of LOCCCTR
 
@@ -64,11 +64,16 @@ int main(){
     fpw=fopen("symtab.txt","w");
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
 
+    fpi=fopen("intermediate.txt","w");
+
     struct OPTAB optab = Read_OpCodes();
     i=1;
     
-    while(i!=10){
+    // Pass 1 algorithm
+
+    while(strcmp(ipcode.lines[i][1],"END")!=0){
         char *st=ToHex(locctr);
+        fprintf(fpi,"%s %s %s %s\n",st,ipcode.lines[i][0],ipcode.lines[i][1],ipcode.lines[i][2]); //writing in input file
         if(strcmp(ipcode.lines[i][1],"BYTE")==0){                   // opcode=byte
             fprintf(fpw,"%s %s\n",ipcode.lines[i][0],st);
             int len=strlen(ipcode.lines[i][2])-3;
@@ -105,6 +110,9 @@ int main(){
         i++;
     }
     last_address=locctr;
+
+    
+
     
     return 0;
 }

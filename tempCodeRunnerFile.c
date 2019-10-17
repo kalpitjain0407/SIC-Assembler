@@ -1,3 +1,2 @@
-for(int j=0;j<strlen(st);j++){
-            printf("%c ",st[j]);
-        }
+ for(int i=0;i<11;i++)
+    p

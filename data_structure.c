@@ -10,7 +10,7 @@
 #define REGISTERS 9
 
 /* Constraints of Input Code */
-#define MAX_IP_Lines 10
+#define MAX_IP_Lines 500
 #define IP_COLUMNS 3
 struct OPTAB {
     // Number of Lines, No of Columns, Size of each array
