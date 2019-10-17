@@ -45,8 +45,8 @@ int main(){
     // Reading of input file
 
 	struct IPCODE ipcode = Read_IP_Code();
-    for(int i=0;i<15;i++)
-    printf("%s\n",ipcode.lines[i][1]);
+    // for(int i=0;i<15;i++)
+    // printf("%s\n",ipcode.lines[i][1]);
 
     // Initialisation of LOCCCTR
 
@@ -65,6 +65,7 @@ int main(){
     fprintf(fpw,"%s %d\n",ipcode.lines[0][0],locctr);
 
     fpi=fopen("intermediate.txt","w");
+    fprintf(fpi,"%s %s %s\n",ipcode.lines[0][0],ipcode.lines[0][1],ipcode.lines[0][2]);
 
     struct OPTAB optab = Read_OpCodes();
     i=1;
