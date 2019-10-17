@@ -77,3 +77,40 @@ struct IPCODE Read_IP_Code() {
 
     return ipcode;
 }
+
+void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_lines) {
+    int i=0, j;
+
+    FILE *fp;
+    fp = fopen("intermediate", "r");
+    if(fp==NULL) {
+        printf("File not Found.");
+        return;
+    }
+    i=0;j=0;
+    do {
+        char addr[5];
+        char label[100];
+        char opcode[100];
+        char operand[100];
+        fscanf(fp, "%s", addr);
+        memcpy(intmdFile[j].addr, addr, sizeof(addr));
+
+        if(strlen(ipcode.lines[j][0])>0){
+            fscanf(fp, "%s", label);
+            memcpy(intmdFile[j].label, label, sizeof(label));
+        } else {
+            memset(intmdFile[j].label, 0, sizeof(intmdFile[j].label));
+        }
+        
+
+        fscanf(fp, "%s", opcode);
+        memcpy(intmdFile[j].opcode, opcode, sizeof(opcode));
+
+        fscanf(fp, "%s", operand);        
+        memcpy(intmdFile[j].operand, operand, sizeof(operand));
+        j++;
+    } while(j<=total_lines);
+
+    return;
+}
