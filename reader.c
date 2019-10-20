@@ -82,7 +82,7 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
     int i=0, j;
 
     FILE *fp;
-    fp = fopen("intermediate", "r");
+    fp = fopen("intermediate.txt", "r");
     if(fp==NULL) {
         printf("File not Found.");
         return;
@@ -93,6 +93,7 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
         char label[100];
         char mnemonic[100];
         char operand[100];
+        
         fscanf(fp, "%s", addr);
         memcpy(intmdFile[j].addr, addr, sizeof(addr));
 
@@ -101,6 +102,7 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
             memcpy(intmdFile[j].label, label, sizeof(label));
         } else {
             memset(intmdFile[j].label, 0, sizeof(intmdFile[j].label));
+            // break;
         }
         
 
@@ -110,7 +112,7 @@ void Read_INTMD_File(struct INTMD *intmdFile, struct IPCODE ipcode, int total_li
         fscanf(fp, "%s", operand);        
         memcpy(intmdFile[j].operand, operand, sizeof(operand));
         j++;
-    } while(j<=total_lines);
+    } while(j<=total_lines+1);
 
     return;
 }
